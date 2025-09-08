@@ -1,0 +1,91 @@
+yair.ben_yakar,levyofek
+319013090,322519422
+
+1. Changes in the API:
+
+	In the Avatar class constructor, a new argument, Runnable updateJump, was added. This callback,
+	provided by PepseGameManager, allows the Avatar to notify PepseGameManager whenever it performs
+	a jump. This notification enables the PepseGameManager to trigger a command for the Cloud to 
+	generate rain. The reason for this API change is that the Avatar class alone does not have the 
+	capability to notify the PepseGameManager about its actions. Here, PepseGameManager acts as an 
+	Observer, allowing centralized coordination of interactions like triggering rain in response to 
+	the avatar’s actions. This design ensures better separation of concerns and enhances the modularity
+	of the code.
+	
+2. How we implemented the trees package:
+
+	2.a Tree - The Tree class encapsulates all three main parts of a tree: its trunk,leaves, and fruits
+	into a single cohesive object, simplifying the way other parts of the game interact with it.
+	By abstracting the complexity of the tree’s components, such as the trunk, leaves, and fruits,
+	the class provides a minimal and straightforward API for users. For instance, the 
+	"removeOrAddTreeFromGame" method allows other classes to add or remove the entire tree from the
+	game world by simply passing the right callback function of the PepseGameManager, without needing
+	to know the intricate details of how the tree is made up of multiple GameObjects 
+	(trunk, leaves, fruits). This abstraction hides the internal complexity of the tree’s structure,
+	providing a clean interface for game developers to interact with the tree as a single object.
+	Furthermore, private methods like "createLeaf" and "createFruit" manage the behavior of 
+	individual tree components, including randomization and animation, allowing the tree to 
+	feel dynamic and alive without exposing these processes to the user. By ensuring that the 
+	user doesn’t need to worry about the internal workings, such as how each part of the tree 
+	is created or how components interact, the Tree class simplifies the game logic and enhances
+	modularity, making the code easier to maintain and expand.
+	
+		
+	2.b Flora - The Flora class is responsible to generate Tree instances within a specified range
+	in the game world, abstracting the complexity of tree creation and placement. It uses 
+	deterministic randomization to "flip a coin" in order to decide if to create a tree in a posible X 
+	coordinate (there is a space between the posible X coordinates), ensuring consistent and
+	repeatable tree patterns based on a given seed from PepseGameManager and the defined range
+	(minX to maxX). This is achieved by hashing the range and seed (Objects.hash(minX, maxX, seed)),
+	ensuring that the tree distribution remains the same for identical inputs across game sessions.
+	PepseGameManager uses the Flora class as a factory and passes it the getGroundHeight method from
+	the Terrain class, which provides the Y-coordinate for each tree based on the terrain’s shape. 
+	This decouples the Flora class from the Terrain class, simplifying the dependency structure 
+	and enhancing modularity, as Tree instances no longer directly rely on Terrain. The createInRange 
+	method, responsible for generating trees,iterates over the specified X range and uses randomization 
+	to determine whether or not to place a tree at each step. When a tree is placed, its Y-coordinate 
+	is calculated using the getGroundHeight(x) function, ensuring proper alignment with the terrain. 
+	By providing a simple API and managing tree creation with control over randomization, the Flora 
+	class allows for efficient and consistent tree management, improving the game’s performance and 
+	making it easier to maintain large quantities of trees within the game world.		
+
+3. How we implemented the Cloud class:
+
+	The Cloud class encapsulates both the visual representation and functionality of the cloud in the
+	game, including its ability to generate rain by creating drops. It contains a constant grid of 
+	blocks forming a 2D list that represents the cloud's shape and randomly generated raindrops that
+	fall from random positions within the cloud. The grid, defined by a predefined pattern (CLOUD_GRID),
+	determines the cloud's structure, with each block represented as a Block object rendered with slight
+	color variations for a natural look. The cloud blocks are animated to drift horizontally across the
+	screen in a loop using Transition animations, creating the effect of moving clouds. Raindrops are 
+	created through the makeRain() method, which spawns oval-shaped GameObjects at random positions inside
+	the cloud. These raindrops fall under gravity, fade out over time via opacity transitions, and are 
+	automatically removed once fully transparent using a callback provided by PepseGameManager. The cloud's
+	initial position is set off-screen, calculated relative to the window dimensions, ensuring a smooth 
+	entry into view. The addCloud method is responsible for initializing the cloud blocks based on the 
+	predefined grid and their animation, ensuring that the cloud is created only once to prevent redundant 
+	processing and resource usage. It provides a clear entry point for adding the cloud to the game world, 
+	encapsulating the logic of block placement and animation setup. This design makes the class's 
+	integration	with the game world efficient through the use of callbacks for adding and removing 
+	objects, enabling seamless interaction with the PepseGameManager. By encapsulating both cloud 
+	behavior and rain generation, the class simplifies game logic by hiding the implementation details, 
+	making the cloud appear as a single GameObject, while also allowing for flexible modification of 
+	cloud shapes and behaviors in the future.
+	
+4. The implementation demonstrates several key OOP principles:
+
+	4.a Encapsulation: Each class manages its own state and behavior, exposing only a minimal API to the 
+	outside world.
+	4.b Abstraction: Complex systems like trees and clouds are presented as single, cohesive objects, hiding
+	their internal details.
+	4.e Observer Pattern: The interaction between Avatar, PepseGameManager, and Cloud demonstrates a 
+	real-world application of the observer pattern by the PepseGameManager.
+	
+5. General Design Choices
+	
+	Performance Optimization: Chunk-based terrain and tree generation ensure that only visible or 
+	near-visible parts of the game world are loaded, improving performance.	
+	Consistency through Deterministic Randomization: Using seeds for terrain, tree, and cloud generation 
+	ensures that the game world remains consistent across each session.
+	Clear Separation of Concerns: Each class handles a specific aspect of the game world, improving 
+	maintainability and reducing the likelihood of bugs.
