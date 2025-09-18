@@ -4,7 +4,7 @@
 PEPSE is a Java-based open-world simulation featuring a dynamic day-night cycle, procedural terrain, and interactive avatar control. It delivers a modular, extensible simulation environment designed with clean object-oriented architecture and event-driven patterns.
 
 ## Demo
-![Demo of PEPSE simulation](src/assets/demo.gif)
+![Demo of PEPSE simulation](src/assets/Demo.gif)
 
 ## Features
 - 🌅 Realistic day-night cycle with smooth light transitions
